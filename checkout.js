@@ -1,7 +1,27 @@
 const API_KEY = '712cc49a-8b72-4632-9bcb-23d4d9bdbc9c';
 const API_URL = 'https://edu.std-900.ist.mospolytech.ru/exam-2024-1/api';
 
-// Функция для оформления заказа
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+
+  const notificationsContainer = document.querySelector('.notifications');
+  notificationsContainer.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 5000);
+}
+
+function formatDate(date) {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
 function checkoutOrder(event) {
   event.preventDefault();
 
@@ -22,14 +42,14 @@ function checkoutOrder(event) {
     phone: phone,
     email: email,
     delivery_address: address,
-    delivery_date: deliveryDate,
+    delivery_date: formatDate(deliveryDate),
     delivery_interval: deliveryTime,
     comment: comment,
     good_ids: items,
     subscribe: false
   };
 
-  console.log('Данные для отправки:', orderData); // Логируем данные
+  console.log('Данные для отправки:', orderData);
 
   const url = `${API_URL}/orders?api_key=${API_KEY}`;
 
@@ -48,11 +68,11 @@ function checkoutOrder(event) {
     return response.json();
   })
   .then(data => {
-    console.log('Ответ от сервера:', data); // Логируем ответ
+    console.log('Ответ от сервера:', data);
     if (data.id) {
-      localStorage.removeItem('cart'); // Очищаем корзину
+      localStorage.removeItem('cart');
       showNotification('Заказ успешно оформлен', 'success');
-      window.location.href = 'account.html'; // Перенаправляем в личный кабинет
+      window.location.href = 'account.html';
     } else {
       showNotification('Ошибка при оформлении заказа', 'error');
     }
@@ -63,5 +83,4 @@ function checkoutOrder(event) {
   });
 }
 
-// Обработчик отправки формы
 document.getElementById('checkout-form').addEventListener('submit', checkoutOrder);
