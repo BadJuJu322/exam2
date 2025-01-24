@@ -1,0 +1,455 @@
+/* Общие стили */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #43497F;
+  color: white;
+}
+
+header .logo {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+header .logo .logo-image {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+header .search {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  margin: 0 20px;
+}
+
+header .search input {
+  padding: 10px;
+  width: 70%;
+  border: 1px solid #ddd;
+  border-radius: 5px 0 0 5px;
+}
+
+header .search button {
+  padding: 10px 20px;
+  background-color: #7C81B6;
+  color: white;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+header .icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+header .icons a {
+  text-decoration: none;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.notifications {
+  padding: 10px;
+  background-color: #DBD26E;
+  text-align: center;
+}
+
+.notification {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  color: white;
+}
+
+.notification.success {
+  background-color: #28a745;
+}
+
+.notification.error {
+  background-color: #dc3545;
+}
+
+main {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+}
+
+.sidebar {
+  width: 250px;
+  margin-right: 20px;
+  padding: 15px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  color: #43497F;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 10px;
+}
+
+.price-range {
+  display: flex;
+  gap: 10px;
+}
+
+.price-range input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.apply-filters {
+  width: 100%;
+  padding: 10px;
+  background-color: #7968CD;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.catalog {
+  flex: 1;
+}
+
+.catalog h2 {
+  margin-top: 0;
+  color: #43497F;
+}
+
+.sort {
+  margin-bottom: 20px;
+}
+
+.sort select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #7968CD;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.product-card img {
+  max-width: 100%;
+  height: auto;
+}
+
+.product-card h3 {
+  margin: 10px 0;
+  color: #43497F;
+}
+
+.product-card .rating {
+  color: #ffc107;
+}
+
+.product-card .price {
+  margin: 10px 0;
+  color: #7968CD;
+}
+
+.product-card .discounted {
+  font-size: 18px;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.product-card .original {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+.product-card .discount {
+  color: #dc3545;
+}
+
+.add-to-cart {
+  padding: 10px;
+  background-color: #7C81B6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.load-more {
+  width: 100%;
+  padding: 10px;
+  background-color: #7968CD;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #43497F;
+  color: white;
+  border-top: 1px solid #ddd;
+}
+
+/* Стили для корзины */
+.cart {
+  flex: 1;
+  padding: 20px;
+}
+
+.cart h2 {
+  color: #43497F;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.cart-item img {
+  width: 80px;
+  height: 80px;
+  margin-right: 20px;
+}
+
+.cart-item-details {
+  flex: 1;
+}
+
+.cart-item h3 {
+  margin: 0;
+  color: #43497F;
+}
+
+.cart-item .price {
+  color: #7968CD;
+}
+
+.cart-item .remove-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cart-summary {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.cart-summary h3 {
+  color: #43497F;
+}
+
+.cart-summary p {
+  font-size: 18px;
+  color: #43497F;
+}
+
+.checkout-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #7968CD;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.checkout-button:hover {
+  background-color: #5a4ca1;
+}
+
+/* Стили для оформления заказа */
+.checkout {
+  flex: 1;
+  padding: 20px;
+}
+
+.checkout h2 {
+  color: #43497F;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #43497F;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.reset-button,
+.submit-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.reset-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.submit-button {
+  background-color: #7968CD;
+  color: white;
+}
+
+/* Стили для личного кабинета */
+.account {
+  flex: 1;
+  padding: 20px;
+}
+
+.account h2 {
+  color: #43497F;
+}
+
+.orders {
+  margin-top: 20px;
+}
+
+.orders h3 {
+  color: #43497F;
+}
+
+.orders table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.orders th,
+.orders td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.orders th {
+  background-color: #7968CD;
+  color: white;
+}
+
+.orders td {
+  background-color: white;
+}
+
+.orders .actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.orders .actions button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.orders .actions .view-button {
+  background-color: #7C81B6;
+  color: white;
+}
+
+.orders .actions .edit-button {
+  background-color: #DBD26E;
+  color: black;
+}
+
+.orders .actions .delete-button {
+  background-color: #dc3545;
+  color: white;
+}

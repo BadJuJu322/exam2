@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Интернет-магазин</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="Логотип" class="logo-image">
+      Название магазина
+    </div>
+    <div class="search">
+      <input type="text" id="search-input" placeholder="Введите запрос">
+      <button id="search-button"><i class="fas fa-search"></i> Найти</button>
+    </div>
+    <div class="icons">
+      <a href="cart.html" class="cart-icon"><i class="fas fa-shopping-cart"></i> Корзина</a>
+      <a href="account.html" class="account-icon"><i class="fas fa-user"></i> Личный кабинет</a>
+    </div>
+  </header>
+
+  <div class="notifications"></div>
+
+  <main>
+    <aside class="sidebar">
+      <h3>Категории</h3>
+      <ul id="category-list">
+        <!-- Категории будут добавлены динамически -->
+      </ul>
+
+      <h3>Стоимость</h3>
+      <div class="price-range">
+        <input type="number" id="price-min" placeholder="От" value="100">
+        <input type="number" id="price-max" placeholder="До" value="5000">
+      </div>
+
+      <label><input type="checkbox" id="discount-only"> Только товары со скидками</label>
+
+      <button class="apply-filters" id="apply-filters">Применить</button>
+    </aside>
+
+    <section class="catalog">
+      <h2>Каталог</h2>
+      <div class="sort">
+        <select id="sort-select">
+          <option value="default">По умолчанию</option>
+          <option value="price-asc">По цене (возрастание)</option>
+          <option value="price-desc">По цене (убывание)</option>
+          <option value="rating">По рейтингу</option>
+        </select>
+      </div>
+
+      <div class="product-grid" id="product-grid">
+        <!-- Товары будут добавлены сюда -->
+      </div>
+
+      <button class="load-more" id="load-more">Загрузить ещё</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Название компании +7 322 322 5252</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
