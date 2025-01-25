@@ -1,92 +1,187 @@
-const API_KEY = '712cc49a-8b72-4632-9bcb-23d4d9bdbc9c';
-const API_URL = 'https://edu.std-900.ist.mospolytech.ru/exam-2024-1/api';
+const API_KEY = '712cc49a-8b72-4632-9bcb-23d4d9bdbc9c'
+const API_URL = 'https://edu.std-900.ist.mospolytech.ru/exam-2024-1/api'
 
-// Функция для уведомлений
 function showNotification(message, type) {
-  const notificationsContainer = document.querySelector('.notifications') || createNotificationContainer();
-  const notification = document.createElement('div');
-  notification.className = `notification ${type}`;
-  notification.textContent = message;
-  notificationsContainer.appendChild(notification);
-  setTimeout(() => notification.remove(), 5000);
-}
-
-function createNotificationContainer() {
-  const container = document.createElement('div');
-  container.className = 'notifications';
-  document.body.prepend(container);
-  return container;
-}
-
-// Форматирование даты в dd.mm.yyyy
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
-}
-
-// Проверка обязательных полей
-function validateForm() {
-  const requiredFields = ['name', 'phone', 'email', 'address', 'delivery-date', 'delivery-time'];
-  return requiredFields.every(field => 
-    document.getElementById(field).value.trim() !== ''
-  );
-}
-
-// Отправка заказа
-async function checkoutOrder(event) {
-  event.preventDefault();
-
-  if (!validateForm()) {
-    showNotification('Заполните все обязательные поля!', 'error');
-    return;
+  const notification = document.createElement('div')
+  notification.className = `notification ${type}`
+  notification.textContent = message
+  const container = document.querySelector('.notifications')
+  if (container) {
+    container.appendChild(notification)
+  } else {
+    const newContainer = document.createElement('div')
+    newContainer.className = 'notifications'
+    document.body.appendChild(newContainer)
+    newContainer.appendChild(notification)
   }
+  setTimeout(() => {
+    notification.remove()
+  }, 5000)
+}
 
-  const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-  if (cartItems.length === 0) {
-    showNotification('Корзина пуста!', 'error');
-    return;
-  }
+function formatDate(date) {
+  const d = new Date(date)
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+  return `${year}.${month}.${day}`
+}
 
-  const orderData = {
-    full_name: document.getElementById('name').value.trim(),
-    phone: document.getElementById('phone').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    delivery_address: document.getElementById('address').value.trim(),
-    delivery_date: formatDate(document.getElementById('delivery-date').value),
-    delivery_interval: document.getElementById('delivery-time').value,
-    comment: document.getElementById('comment').value.trim(),
-    good_ids: cartItems.map(item => parseInt(item.id)), // Числовые ID
-    subscribe: false
-  };
-
-  try {
-    const response = await fetch(`${API_URL}/orders?api_key=${API_KEY}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`
-      },
-      body: JSON.stringify(orderData)
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || `HTTP Error ${response.status}`);
+function getGoods(page = 1, perPage = 10, query = '') {
+  const url = `${API_URL}/goods?api_key=${API_KEY}&page=${page}&per_page=${perPage}&query=${encodeURIComponent(query)}`
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${API_KEY}`
     }
-
-    localStorage.removeItem('cart');
-    showNotification('Заказ успешно оформлен!', 'success');
-    setTimeout(() => window.location.href = 'account.html', 1500);
-
-  } catch (error) {
-    console.error('Ошибка:', error);
-    showNotification(`Ошибка: ${error.message}`, 'error');
-  }
+  }).then(r => {
+    if (!r.ok) throw new Error(`Ошибка HTTP: ${r.status}`)
+    return r.json()
+  })
 }
 
-// Инициализация
-document.getElementById('checkout-form').addEventListener('submit', checkoutOrder);
+function getGood(goodId) {
+  const url = `${API_URL}/goods/${goodId}?api_key=${API_KEY}`
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${API_KEY}`
+    }
+  }).then(r => {
+    if (!r.ok) throw new Error(`Ошибка HTTP: ${r.status}`)
+    return r.json()
+  })
+}
+
+function getAutocomplete(query) {
+  const url = `${API_URL}/autocomplete?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${API_KEY}`
+    }
+  }).then(r => {
+    if (!r.ok) throw new Error(`Ошибка HTTP: ${r.status}`)
+    return r.json()
+  })
+}
+
+function getOrders() {
+  const url = `${API_URL}/orders?api_key=${API_KEY}`
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${API_KEY}`
+    }
+  }).then(r => {
+    if (!r.ok) throw new Error(`Ошибка HTTP: ${r.status}`)
+    return r.json()
+  })
+}
+
+function getOrder(orderId) {
+  const url = `${API_URL}/orders/${orderId}?api_key=${API_KEY}`
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${API_KEY}`
+    }
+  }).then(r => {
+    if (!r.ok) throw new Error(`Ошибка HTTP: ${r.status}`)
+    return r.json()
+  })
+}
+
+function createOrder(orderData) {
+  const url = `${API_URL}/orders?api_key=${API_KEY}`
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify(orderData)
+  }).then(r => {
+    if (!r.ok) throw new Error(`Ошибка HTTP: ${r.status}`)
+    return r.json()
+  })
+}
+
+function updateOrder(orderId, updatedData) {
+  const url = `${API_URL}/orders/${orderId}?api_key=${API_KEY}`
+  return fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify(updatedData)
+  }).then(r => {
+    if (!r.ok) throw new Error(`Ошибка HTTP: ${r.status}`)
+    return r.json()
+  })
+}
+
+function deleteOrder(orderId) {
+  const url = `${API_URL}/orders/${orderId}?api_key=${API_KEY}`
+  return fetch(url, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${API_KEY}`
+    }
+  }).then(r => {
+    if (!r.ok) throw new Error(`Ошибка HTTP: ${r.status}`)
+    return r.json()
+  })
+}
+
+function checkoutOrder(e) {
+  e.preventDefault()
+  const name = document.getElementById('name').value
+  const phone = document.getElementById('phone').value
+  const email = document.getElementById('email').value
+  const address = document.getElementById('address').value
+  const deliveryDate = document.getElementById('delivery-date').value
+  const deliveryTime = document.getElementById('delivery-time').value
+  const comment = document.getElementById('comment').value
+  const cartItems = JSON.parse(localStorage.getItem('cart')) || []
+  const items = cartItems.map(i => i.id)
+  const orderData = {
+    full_name: name,
+    phone,
+    email,
+    delivery_address: address,
+    delivery_date: formatDate(deliveryDate),
+    delivery_interval: deliveryTime,
+    comment,
+    good_ids: items,
+    subscribe: false
+  }
+  console.log(JSON.stringify(orderData))
+  createOrder(orderData).then(data => {
+    console.log(JSON.stringify(data))
+    if (data.id) {
+      localStorage.removeItem('cart')
+      showNotification('Заказ успешно оформлен', 'success')
+      window.location.href = 'account.html'
+    } else {
+      showNotification('Ошибка при оформлении заказа', 'error')
+    }
+  }).catch(err => {
+    console.error(err)
+    showNotification('Ошибка при оформлении заказа', 'error')
+  })
+}
+
+const checkoutForm = document.getElementById('checkout-form')
+if (checkoutForm) {
+  checkoutForm.addEventListener('submit', checkoutOrder)
+}
