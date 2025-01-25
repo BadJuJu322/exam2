@@ -1,43 +1,26 @@
 const API_KEY = '712cc49a-8b72-4632-9bcb-23d4d9bdbc9c';
 const API_URL = 'https://edu.std-900.ist.mospolytech.ru/exam-2024-1/api';
 
-/**
- * Функция для вывода уведомлений
- */
 function showNotification(message, type) {
   const notification = document.createElement('div');
   notification.className = `notification ${type}`;
   notification.textContent = message;
 
   const notificationsContainer = document.querySelector('.notifications');
-  if (notificationsContainer) {
-    notificationsContainer.appendChild(notification);
-  } else {
-    // Если на странице нет контейнера для нотификаций,
-    // можно добавить его динамически
-    const newContainer = document.createElement('div');
-    newContainer.className = 'notifications';
-    document.body.appendChild(newContainer);
-    newContainer.appendChild(notification);
-  }
+  notificationsContainer.appendChild(notification);
 
   setTimeout(() => {
     notification.remove();
   }, 5000);
 }
 
-/**
- * Функция для форматирования даты в формат DD.MM.YYYY
- * Если ваш сервер ожидает YYYY-MM-DD, замените на соответствующий формат.
- */
 function formatDate(date) {
   const d = new Date(date);
   const day = String(d.getDate()).padStart(2, '0');
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const year = d.getFullYear();
-  return `${year}.${month}.${day}`;
+  return `${year}-${month}-${day}`;
 }
-
 // ==========================
 //  Методы получения данных (GET)
 // ==========================
