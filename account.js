@@ -95,6 +95,14 @@ function loadOrders() {
   });
 }
 
+function calculateClientTotal(goodIds) {
+  const allGoods = JSON.parse(localStorage.getItem('allProducts')) || [];
+  return goodIds.reduce((sum, id) => {
+    const product = allGoods.find(p => p.id === id);
+    const price = product?.discount_price || product?.actual_price || 0;
+    return sum + price;
+  }, 0);
+}
 // Отображение заказов
 function displayOrders(orders) {
   const tbody = document.querySelector('#orders-table tbody');
