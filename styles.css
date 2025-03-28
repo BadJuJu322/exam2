@@ -466,10 +466,15 @@ footer {
 
 .modal-content {
   background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  width: 50%;
-  border-radius: 5px;
+  position: relative;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 30px;
+  width: 600px;
+  max-width: 90%;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 .close {
