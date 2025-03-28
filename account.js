@@ -95,6 +95,14 @@ function loadOrders() {
   });
 }
 
+function calculateClientTotal(ids) {
+  const allGoods = JSON.parse(localStorage.getItem('allProducts')) || [];
+  return ids.reduce((sum, id) => {
+    const good = allGoods.find(p => p.id === id);
+    const price = good?.discount_price || good?.actual_price || 0;
+    return sum + price;
+  }, 0);
+}
 // Отображение заказов
 function displayOrders(orders) {
   const tbody = document.querySelector('#orders-table tbody');
@@ -103,7 +111,7 @@ function displayOrders(orders) {
       <td>${order.id}</td>
       <td>${new Date(order.created_at).toLocaleDateString()}</td>
       <td>${order.good_ids.join(', ')}</td>
-      <td>${order.total} ₽</td>
+      <td>${order.total ?? calculateClientTotal(order.good_ids)} ₽</td>
       <td>${order.delivery_date} ${order.delivery_interval}</td>
       <td class="actions">
         <button class="view-button" data-id="${order.id}">Просмотр</button>
