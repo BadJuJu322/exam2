@@ -481,5 +481,17 @@ footer {
 
 .modal h3 {
   color: #43497F;
+
   margin-top: 0;
 }
+.actions button {
+  margin: 2px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.view-button { background-color: #4CAF50; color: white; }
+.edit-button { background-color: #2196F3; color: white; }
+.delete-button { background-color: #f44336; color: white; }
