@@ -19,6 +19,8 @@
     </div>
   </header>
 
+  <div class="notifications"></div>
+
   <main>
     <section class="account">
       <h2>Личный кабинет</h2>
@@ -42,6 +44,65 @@
       </div>
     </section>
   </main>
+
+  <!-- Модальные окна -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Редактирование заказа</h3>
+      <form id="edit-form">
+        <div class="form-group">
+          <label for="edit-name">Имя</label>
+          <input type="text" id="edit-name" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-phone">Телефон</label>
+          <input type="tel" id="edit-phone" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-email">Email</label>
+          <input type="email" id="edit-email" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-address">Адрес</label>
+          <input type="text" id="edit-address" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-date">Дата доставки</label>
+          <input type="date" id="edit-date" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-time">Время доставки</label>
+          <select id="edit-time" required>
+            <option value="08:00-12:00">08:00-12:00</option>
+            <option value="12:00-14:00">12:00-14:00</option>
+            <option value="14:00-18:00">14:00-18:00</option>
+            <option value="18:00-22:00">18:00-22:00</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-comment">Комментарий</label>
+          <textarea id="edit-comment" rows="4"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="cancel-button">Отмена</button>
+          <button type="submit" class="save-button">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Удаление заказа</h3>
+      <p>Вы уверены, что хотите удалить заказ?</p>
+      <div class="form-actions">
+        <button type="button" class="cancel-button">Нет</button>
+        <button type="button" class="confirm-delete">Да</button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <p>© 2025 Название компании</p>
