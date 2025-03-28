@@ -2,6 +2,64 @@ const API_KEY = '712cc49a-8b72-4632-9bcb-23d4d9bdbc9c';
 const API_URL = 'https://edu.std-900.ist.mospolytech.ru/exam-2024-1/api';
 
 let selectedOrderId = null;
+document.addEventListener('DOMContentLoaded', () => {
+  // Обработчик для кнопки просмотра
+  document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('view-button')) {
+      const orderId = e.target.dataset.id;
+      try {
+        const order = await fetchOrderDetails(orderId);
+        showOrderDetailsModal(order);
+      } catch (error) {
+        showNotification('Ошибка загрузки данных', 'error');
+      }
+    }
+  });
+});
+
+// Функция для отображения деталей заказа
+function showOrderDetailsModal(order) {
+  const modalContent = `
+    <p><strong>Имя:</strong> ${order.full_name}</p>
+    <p><strong>Телефон:</strong> ${order.phone}</p>
+    <p><strong>Адрес:</strong> ${order.delivery_address}</p>
+    <p><strong>Дата доставки:</strong> ${order.delivery_date}</p>
+    <p><strong>Комментарий:</strong> ${order.comment || 'Нет'}</p>
+  `;
+  
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Детали заказа #${order.id}</h3>
+      ${modalContent}
+    </div>
+  `;
+  
+  modal.querySelector('.close').addEventListener('click', () => modal.remove());
+  document.body.appendChild(modal);
+  modal.style.display = 'block';
+}
+
+// Обновите функцию displayOrders
+function displayOrders(orders) {
+  const tbody = document.querySelector('#orders-table tbody');
+  tbody.innerHTML = orders.map(order => `
+    <tr>
+      <td>${order.id}</td>
+      <td>${new Date(order.created_at).toLocaleString()}</td>
+      <td>${order.good_ids.join(', ')}</td>
+      <td>${order.total} ₽</td>
+      <td>${order.delivery_date} ${order.delivery_interval}</td>
+      <td class="actions">
+        <button class="view-button" data-id="${order.id}">Просмотр</button>
+        <button class="edit-button" data-id="${order.id}">Редактировать</button>
+        <button class="delete-button" data-id="${order.id}">Удалить</button>
+      </td>
+    </tr>
+  `).join('');
+}
 
 // Модальные окна
 const editModal = document.getElementById('editModal');
