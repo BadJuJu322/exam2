@@ -1,35 +1,46 @@
 const API_KEY = '712cc49a-8b72-4632-9bcb-23d4d9bdbc9c';
 const API_URL = 'https://edu.std-900.ist.mospolytech.ru/exam-2024-1/api';
 
-// Функция для загрузки заказов
-function loadOrders() {
-  const url = `${API_URL}/orders?api_key=${API_KEY}`;
+let selectedOrderId = null;
 
-  fetch(url, {
-    headers: {
-      'Authorization': `Bearer ${API_KEY}`
-    }
+// Модальные окна
+const editModal = document.getElementById('editModal');
+const deleteModal = document.getElementById('deleteModal');
+const closeButtons = document.querySelectorAll('.close');
+const cancelButtons = document.querySelectorAll('.cancel-button');
+
+// Обработчики закрытия модалок
+closeButtons.forEach(btn => btn.addEventListener('click', closeModals));
+cancelButtons.forEach(btn => btn.addEventListener('click', closeModals));
+window.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal')) closeModals();
+});
+
+function closeModals() {
+  editModal.style.display = 'none';
+  deleteModal.style.display = 'none';
+}
+
+// Загрузка заказов
+function loadOrders() {
+  fetch(`${API_URL}/orders?api_key=${API_KEY}`, {
+    headers: { 'Authorization': `Bearer ${API_KEY}` }
   })
   .then(response => {
-    if (!response.ok) {
-      throw new Error(`Ошибка HTTP: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Ошибка HTTP: ${response.status}`);
     return response.json();
   })
-  .then(data => {
-    console.log('Заказы от сервера:', data); // Логируем заказы
-    displayOrders(data);
-  })
+  .then(data => displayOrders(data))
   .catch(error => {
-    console.error('Ошибка при загрузке заказов:', error);
-    showNotification('Ошибка при загрузке заказов', 'error');
+    showNotification('Ошибка загрузки заказов', 'error');
+    console.error(error);
   });
 }
 
-// Функция для отображения заказов
+// Отображение заказов
 function displayOrders(orders) {
-  const ordersTable = document.getElementById('orders-table').getElementsByTagName('tbody')[0];
-  ordersTable.innerHTML = orders.map(order => `
+  const tbody = document.querySelector('#orders-table tbody');
+  tbody.innerHTML = orders.map(order => `
     <tr>
       <td>${order.id}</td>
       <td>${new Date(order.created_at).toLocaleDateString()}</td>
@@ -43,6 +54,95 @@ function displayOrders(orders) {
       </td>
     </tr>
   `).join('');
+}
+
+// Обработчики кнопок
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('edit-button')) {
+    selectedOrderId = e.target.dataset.id;
+    loadOrderData(selectedOrderId);
+    editModal.style.display = 'block';
+  }
+  
+  if (e.target.classList.contains('delete-button')) {
+    selectedOrderId = e.target.dataset.id;
+    deleteModal.style.display = 'block';
+  }
+});
+
+// Загрузка данных для редактирования
+async function loadOrderData(orderId) {
+  try {
+    const order = await fetch(`${API_URL}/orders/${orderId}?api_key=${API_KEY}`, {
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    }).then(r => r.json());
+
+    document.getElementById('edit-name').value = order.full_name;
+    document.getElementById('edit-phone').value = order.phone;
+    document.getElementById('edit-email').value = order.email;
+    document.getElementById('edit-address').value = order.delivery_address;
+    document.getElementById('edit-date').value = order.delivery_date.split('T')[0];
+    document.getElementById('edit-time').value = order.delivery_interval;
+    document.getElementById('edit-comment').value = order.comment || '';
+  } catch (error) {
+    showNotification('Ошибка загрузки данных', 'error');
+  }
+}
+
+// Сохранение изменений
+document.getElementById('edit-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const updatedData = {
+    full_name: document.getElementById('edit-name').value,
+    phone: document.getElementById('edit-phone').value,
+    email: document.getElementById('edit-email').value,
+    delivery_address: document.getElementById('edit-address').value,
+    delivery_date: document.getElementById('edit-date').value,
+    delivery_interval: document.getElementById('edit-time').value,
+    comment: document.getElementById('edit-comment').value
+  };
+
+  try {
+    await fetch(`${API_URL}/orders/${selectedOrderId}?api_key=${API_KEY}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify(updatedData)
+    });
+    showNotification('Заказ обновлен', 'success');
+    loadOrders();
+    closeModals();
+  } catch (error) {
+    showNotification('Ошибка обновления', 'error');
+  }
+});
+
+// Удаление заказа
+document.querySelector('.confirm-delete').addEventListener('click', async () => {
+  try {
+    await fetch(`${API_URL}/orders/${selectedOrderId}?api_key=${API_KEY}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    });
+    showNotification('Заказ удален', 'success');
+    loadOrders();
+    closeModals();
+  } catch (error) {
+    showNotification('Ошибка удаления', 'error');
+  }
+});
+
+// Уведомления
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  
+  const container = document.querySelector('.notifications');
+  container.appendChild(notification);
+  setTimeout(() => notification.remove(), 5000);
 }
 
 // Инициализация
