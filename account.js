@@ -95,40 +95,23 @@ function loadOrders() {
   });
 }
 
-async function calculateOrderTotal(goodIds) {
-  try {
-    const goods = await Promise.all(goodIds.map(id => 
-      fetch(`${API_URL}/goods/${id}?api_key=${API_KEY}`)
-        .then(r => r.json())
-    ));
-    return goods.reduce((sum, item) => {
-      const price = item.discount_price || item.actual_price;
-      return sum + (price || 0);
-    }, 0);
-  } catch (error) {
-    return 0;
-  }
-}
-
-async function displayOrders(orders) {
+// Отображение заказов
+function displayOrders(orders) {
   const tbody = document.querySelector('#orders-table tbody');
-  tbody.innerHTML = await Promise.all(orders.map(async order => {
-    const total = await calculateOrderTotal(order.good_ids);
-    return `
-      <tr>
-        <td>${order.id}</td>
-        <td>${new Date(order.created_at).toLocaleDateString()}</td>
-        <td>${order.good_ids.join(', ')}</td>
-        <td>${total} ₽</td>
-        <td>${order.delivery_date} ${order.delivery_interval}</td>
-        <td class="actions">
-          <button class="view-button" data-id="${order.id}">Просмотр</button>
-          <button class="edit-button" data-id="${order.id}">Редактировать</button>
-          <button class="delete-button" data-id="${order.id}">Удалить</button>
-        </td>
-      </tr>
-    `;
-  }));
+  tbody.innerHTML = orders.map(order => `
+    <tr>
+      <td>${order.id}</td>
+      <td>${new Date(order.created_at).toLocaleDateString()}</td>
+      <td>${order.good_ids.join(', ')}</td>
+      <td>${order.total} ₽</td>
+      <td>${order.delivery_date} ${order.delivery_interval}</td>
+      <td class="actions">
+        <button class="view-button" data-id="${order.id}">Просмотр</button>
+        <button class="edit-button" data-id="${order.id}">Редактировать</button>
+        <button class="delete-button" data-id="${order.id}">Удалить</button>
+      </td>
+    </tr>
+  `).join('');
 }
 
 // Обработчики кнопок
