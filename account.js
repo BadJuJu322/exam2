@@ -109,23 +109,26 @@ async function calculateOrderTotal(goodIds) {
     return 0;
   }
 }
-// Отображение заказов
-function displayOrders(orders) {
+
+async function displayOrders(orders) {
   const tbody = document.querySelector('#orders-table tbody');
-  tbody.innerHTML = orders.map(order => `
-    <tr>
-      <td>${order.id}</td>
-      <td>${new Date(order.created_at).toLocaleDateString()}</td>
-      <td>${order.good_ids.join(', ')}</td>
-      <td>${order.total ?? calculateClientTotal(order.good_ids)} ₽</td>
-      <td>${order.delivery_date} ${order.delivery_interval}</td>
-      <td class="actions">
-        <button class="view-button" data-id="${order.id}">Просмотр</button>
-        <button class="edit-button" data-id="${order.id}">Редактировать</button>
-        <button class="delete-button" data-id="${order.id}">Удалить</button>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = await Promise.all(orders.map(async order => {
+    const total = await calculateOrderTotal(order.good_ids);
+    return `
+      <tr>
+        <td>${order.id}</td>
+        <td>${new Date(order.created_at).toLocaleDateString()}</td>
+        <td>${order.good_ids.join(', ')}</td>
+        <td>${total} ₽</td>
+        <td>${order.delivery_date} ${order.delivery_interval}</td>
+        <td class="actions">
+          <button class="view-button" data-id="${order.id}">Просмотр</button>
+          <button class="edit-button" data-id="${order.id}">Редактировать</button>
+          <button class="delete-button" data-id="${order.id}">Удалить</button>
+        </td>
+      </tr>
+    `;
+  }));
 }
 
 // Обработчики кнопок
