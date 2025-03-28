@@ -10,17 +10,18 @@ function showNotification(message, type) {
   setTimeout(() => notification.remove(), 5000);
 }
 
+// Формат даты: YYYY-MM-DD
 function formatDate(date) {
   const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0');
   const year = d.getFullYear();
-  return `${day}.${month}.${year}`; // Формат dd.mm.yyyy
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 function validatePhone(phone) {
   const cleaned = phone.replace(/\D/g, '');
-  return cleaned.startsWith('7') && cleaned.length === 11;
+  return cleaned.length === 11 && cleaned.startsWith('7');
 }
 
 function checkoutOrder(e) {
@@ -37,8 +38,18 @@ function checkoutOrder(e) {
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
 
   // Валидация
+  if (!name) {
+    showNotification('Укажите имя', 'error');
+    return;
+  }
+
   if (!validatePhone(rawPhone)) {
-    showNotification('Некорректный номер телефона (пример: +7 999 123-45-67)', 'error');
+    showNotification('Некорректный номер телефона (пример: 79991234567)', 'error');
+    return;
+  }
+
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    showNotification('Некорректный email', 'error');
     return;
   }
 
@@ -65,7 +76,7 @@ function checkoutOrder(e) {
     delivery_interval: deliveryTime,
     comment: comment || null,
     good_ids: cartItems.map(item => item.id),
-    subscribe: false
+    subscribe: 0 // Число вместо boolean
   };
 
   // Отправка запроса
@@ -95,7 +106,7 @@ function createOrder(orderData) {
   .then(response => {
     if (!response.ok) {
       return response.json().then(err => {
-        throw new Error(err.error || 'Неизвестная ошибка');
+        throw new Error(err.error || JSON.stringify(err));
       });
     }
     return response.json();
