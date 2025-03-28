@@ -42,7 +42,16 @@ function showOrderDetailsModal(order) {
   modal.style.display = 'block';
 }
 
-// Обновите функцию displayOrders
+function calculateClientTotal(goodIds) {
+  const allGoods = JSON.parse(localStorage.getItem('allProducts')) || [];
+  if (!Array.isArray(goodIds)) return 0;
+  return goodIds.reduce((sum, id) => {
+    const product = allGoods.find(p => p.id === id);
+    const price = (product?.discount_price || product?.actual_price || 0);
+    return sum + price;
+  }, 0);
+}
+
 function displayOrders(orders) {
   const tbody = document.querySelector('#orders-table tbody');
   tbody.innerHTML = orders.map(order => `
@@ -50,7 +59,7 @@ function displayOrders(orders) {
       <td>${order.id}</td>
       <td>${new Date(order.created_at).toLocaleDateString()}</td>
       <td>${order.good_ids?.join(', ') || 'Нет данных'}</td>
-      <td>${order.total || 0} ₽</td>
+      <td>${calculateClientTotal(order.good_ids || [])} ₽</td>
       <td>${order.delivery_date} ${order.delivery_interval}</td>
       <td class="actions">
         <button class="view-button" data-id="${order.id}">Просмотр</button>
@@ -95,24 +104,6 @@ function loadOrders() {
   });
 }
 
-// Отображение заказов
-function displayOrders(orders) {
-  const tbody = document.querySelector('#orders-table tbody');
-  tbody.innerHTML = orders.map(order => `
-    <tr>
-      <td>${order.id}</td>
-      <td>${new Date(order.created_at).toLocaleDateString()}</td>
-      <td>${order.good_ids.join(', ')}</td>
-      <td>${order.total || 0} ₽</td>
-      <td>${order.delivery_date} ${order.delivery_interval}</td>
-      <td class="actions">
-        <button class="view-button" data-id="${order.id}">Просмотр</button>
-        <button class="edit-button" data-id="${order.id}">Редактировать</button>
-        <button class="delete-button" data-id="${order.id}">Удалить</button>
-      </td>
-    </tr>
-  `).join('');
-}
 
 // Обработчики кнопок
 document.addEventListener('click', function(e) {
