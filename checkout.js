@@ -153,6 +153,7 @@ function checkoutOrder(e) {
   const deliveryTime = document.getElementById('delivery-time').value
   const comment = document.getElementById('comment').value
   const cartItems = JSON.parse(localStorage.getItem('cart')) || []
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const items = cartItems.map(i => i.id)
   const orderData = {
     full_name: name,
@@ -161,6 +162,7 @@ function checkoutOrder(e) {
     delivery_address: address,
     delivery_date: formatDate(deliveryDate),
     delivery_interval: deliveryTime,
+    total: totalPrice, 
     comment,
     good_ids: items,
     subscribe: false
