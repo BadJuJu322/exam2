@@ -24,7 +24,7 @@ function formatDate(date) {
   const day = String(d.getDate()).padStart(2, '0')
   const month = String(d.getMonth() + 1).padStart(2, '0')
   const year = d.getFullYear()
-  return `${day}.${month}.${year}` // Исправленный формат DD.MM.YYYY
+  return `${year}.${month}.${day}`
 }
 
 function getGoods(page = 1, perPage = 10, query = '') {
@@ -153,12 +153,6 @@ function checkoutOrder(e) {
   const deliveryTime = document.getElementById('delivery-time').value
   const comment = document.getElementById('comment').value
   const cartItems = JSON.parse(localStorage.getItem('cart')) || []
-  
-  if (!deliveryDate) {
-    showNotification('Укажите дату доставки', 'error')
-    return
-  }
-
   const items = cartItems.map(i => i.id)
   const orderData = {
     full_name: name,
@@ -171,64 +165,23 @@ function checkoutOrder(e) {
     good_ids: items,
     subscribe: false
   }
-
-  createOrder(orderData)
-    .then(data => {
-      if (data.id) {
-        localStorage.removeItem('cart')
-        showNotification('Заказ успешно оформлен', 'success')
-        window.location.href = 'account.html'
-      } else {
-        showNotification('Ошибка при оформлении заказа', 'error')
-      }
-    })
-    .catch(err => {
-      console.error(err)
-      showNotification('Ошибка при оформлении заказа: ' + err.message, 'error')
-    })
+  console.log(JSON.stringify(orderData))
+  createOrder(orderData).then(data => {
+    console.log(JSON.stringify(data))
+    if (data.id) {
+      localStorage.removeItem('cart')
+      showNotification('Заказ успешно оформлен', 'success')
+      window.location.href = 'account.html'
+    } else {
+      showNotification('Ошибка при оформлении заказа', 'error')
+    }
+  }).catch(err => {
+    console.error(err)
+    showNotification('Ошибка при оформлении заказа', 'error')
+  })
 }
 
 const checkoutForm = document.getElementById('checkout-form')
 if (checkoutForm) {
   checkoutForm.addEventListener('submit', checkoutOrder)
 }
-
-// Инициализация корзины
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.location.pathname.includes('cart.html')) {
-    const cartItems = JSON.parse(localStorage.getItem('cart')) || []
-    const cartContainer = document.getElementById('cart-items')
-    
-    if (cartItems.length === 0) {
-      cartContainer.innerHTML = '<p>Корзина пуста</p>'
-      return
-    }
-
-    // Загрузка данных о товарах
-    Promise.all(cartItems.map(item => getGood(item.id)))
-      .then(goods => {
-        cartContainer.innerHTML = goods.map(good => `
-          <div class="cart-item">
-            <img src="${good.image_url}" alt="${good.name}">
-            <h3>${good.name}</h3>
-            <p>Цена: ${good.discount_price || good.actual_price} руб.</p>
-            <button class="remove-item" data-id="${good.id}">Удалить</button>
-          </div>
-        `).join('')
-
-        // Обработчики для кнопок удаления
-        document.querySelectorAll('.remove-item').forEach(button => {
-          button.addEventListener('click', () => {
-            const itemId = parseInt(button.dataset.id)
-            const newCart = cartItems.filter(item => item.id !== itemId)
-            localStorage.setItem('cart', JSON.stringify(newCart))
-            button.closest('.cart-item').remove()
-            
-            if (newCart.length === 0) {
-              cartContainer.innerHTML = '<p>Корзина пуста</p>'
-            }
-          })
-        })
-      })
-  }
-})
