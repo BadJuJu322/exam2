@@ -23,7 +23,7 @@ function loadProducts() {
   })
   .then(data => {
     console.log('Данные от сервера:', data);
-    allProducts = data;
+    localStorage.setItem('allProducts', JSON.stringify(data));
     displayCategories();
     applyFilters();
   })
