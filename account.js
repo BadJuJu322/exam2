@@ -48,9 +48,9 @@ function displayOrders(orders) {
   tbody.innerHTML = orders.map(order => `
     <tr>
       <td>${order.id}</td>
-      <td>${new Date(order.created_at).toLocaleString()}</td>
-      <td>${order.good_ids.join(', ')}</td>
-      <td>${order.total} ₽</td>
+      <td>${new Date(order.created_at).toLocaleDateString()}</td>
+      <td>${order.good_ids?.join(', ') || 'Нет данных'}</td>
+      <td>${order.total || 0} ₽</td>
       <td>${order.delivery_date} ${order.delivery_interval}</td>
       <td class="actions">
         <button class="view-button" data-id="${order.id}">Просмотр</button>
