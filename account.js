@@ -95,13 +95,19 @@ function loadOrders() {
   });
 }
 
-function calculateClientTotal(ids) {
-  const allGoods = JSON.parse(localStorage.getItem('allProducts')) || [];
-  return ids.reduce((sum, id) => {
-    const good = allGoods.find(p => p.id === id);
-    const price = good?.discount_price || good?.actual_price || 0;
-    return sum + price;
-  }, 0);
+async function calculateOrderTotal(goodIds) {
+  try {
+    const goods = await Promise.all(goodIds.map(id => 
+      fetch(`${API_URL}/goods/${id}?api_key=${API_KEY}`)
+        .then(r => r.json())
+    ));
+    return goods.reduce((sum, item) => {
+      const price = item.discount_price || item.actual_price;
+      return sum + (price || 0);
+    }, 0);
+  } catch (error) {
+    return 0;
+  }
 }
 // Отображение заказов
 function displayOrders(orders) {
