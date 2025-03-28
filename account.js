@@ -1,6 +1,16 @@
 const API_KEY = '712cc49a-8b72-4632-9bcb-23d4d9bdbc9c';
 const API_URL = 'https://edu.std-900.ist.mospolytech.ru/exam-2024-1/api';
 
+async function fetchOrderDetails(orderId) {
+  const response = await fetch(`${API_URL}/orders/${orderId}?api_key=${API_KEY}`, {
+    headers: { 'Authorization': `Bearer ${API_KEY}` }
+  });
+  if (!response.ok) {
+    throw new Error(`Ошибка HTTP: ${response.status}`);
+  }
+  return response.json();
+}
+
 let selectedOrderId = null;
 document.addEventListener('DOMContentLoaded', () => {
   // Обработчик для кнопки просмотра
